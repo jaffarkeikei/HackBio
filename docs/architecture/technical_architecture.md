@@ -8,6 +8,10 @@ graph TD
     B --> C[Analysis Pipeline]
     C --> D[Visualization Engine]
     D --> E[Results & Insights]
+    C --> F[Predictive Models]
+    F --> E
+    A --> G[Molecular Analysis]
+    G --> E
 
     subgraph Data Processing
         B1[Load Parquet Files] --> B2[Data Cleaning]
@@ -23,6 +27,16 @@ graph TD
         D1[Generate Plots] --> D2[Create Heatmaps]
         D2 --> D3[Export Visualizations]
     end
+    
+    subgraph Predictive Models
+        F1[Drug Response Model] --> F2[Cell Type Classifier]
+        F2 --> F3[Prediction API]
+    end
+    
+    subgraph Molecular Analysis
+        G1[SMILES Processing] --> G2[Drug Descriptor Calculation]
+        G2 --> G3[Structural Similarity]
+    end
 ```
 
 ## Data Flow Architecture
@@ -34,13 +48,22 @@ graph TD
 │ - Parquet Files │ ──► │ - Data Cleaning │ ──► │ - Statistics    │
 │ - Metadata      │     │ - Normalization │     │ - Drug Effects  │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
-                                                         │
-                                                         ▼
+       │                                                 │
+       ▼                                                 ▼
+┌─────────────────┐                        ┌─────────────────┐ 
+│  Molecular      │                        │   Predictive    │ 
+│  Analysis       │                        │   Models        │ 
+└─────────────────┘                        └─────────────────┘ 
+       │                                                 │
+       └─────────────────────┬──────────────────────────┘
+                             │
+                             ▼
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │    Outputs      │     │  Visualization  │     │    Analysis     │
 │   ───────────   │ ◄── │   ───────────   │ ◄── │   Results      │
 │ - Plots         │     │ - Matplotlib    │     │ - Insights      │
 │ - Reports       │     │ - Seaborn       │     │ - Patterns      │
+│ - Predictions   │     │ - Drug Profiles │     │ - Predictions   │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
@@ -61,21 +84,40 @@ graph TD
 - **Heatmap Engine**: Generates expression heatmaps
 - **Export Module**: Saves high-quality figures
 
+### 4. Predictive Models (New)
+- **Drug Response Predictor**: Predicts gene expression changes in response to drugs
+- **Cell Type Classifier**: Identifies cell types from gene expression data
+- **Model Evaluation**: Assesses model performance and provides insights
+
+### 5. Molecular Analysis (New)
+- **SMILES Processor**: Analyzes drug chemical structures
+- **Molecular Descriptor Calculator**: Computes physicochemical properties
+- **Structural Clustering**: Groups drugs by similarity
+
 ## File Structure
 ```
 project/
 ├── dataset/
 │   ├── de_train_split.parquet
 │   └── de_test_split.parquet
-├── src/
-│   ├── analyze_data.py
-│   └── visualize_data.py
-├── notebooks/
-│   ├── dataset.ipynb
-│   └── exploration.ipynb
-└── plots/
-    ├── gene_expression_heatmap.png
-    └── drug_response_plots.png
+├── docs/
+│   ├── architecture/
+│   ├── tutorials/
+│   └── images/
+├── models/
+│   ├── cell_type_classifier.pkl
+│   └── drug_response_model.pkl
+├── plots/
+│   └── various visualization files
+├── analyze_data.py
+├── drug_response_model.py (New)
+├── molecular_analysis.py (New)
+├── predict.py (New)
+├── train_model.py (New)
+├── visualize_data.py
+├── dataset.ipynb
+├── exploration_notebook.ipynb (New)
+└── requirements.txt (New)
 ```
 
 ## Technology Stack
@@ -85,11 +127,14 @@ project/
 - **Pandas**: Data manipulation
 - **NumPy**: Numerical computations
 - **Matplotlib/Seaborn**: Visualization
+- **Scikit-learn**: Machine learning models
+- **RDKit**: Molecular analysis and cheminformatics
 
 ### Data Formats
 - **Parquet**: Primary data storage
 - **CSV**: Data export format
 - **PNG**: Visualization output
+- **PKL**: Serialized model storage
 
 ### Development Tools
 - **Jupyter**: Interactive analysis

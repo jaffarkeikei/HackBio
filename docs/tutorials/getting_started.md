@@ -26,7 +26,7 @@ venv\Scripts\activate
 source venv/bin/activate
 
 # Install required packages
-pip install pandas numpy matplotlib seaborn scikit-learn
+pip install -r requirements.txt
 ```
 
 ### 2. Understanding the Data
@@ -72,6 +72,45 @@ plt.tight_layout()
 plt.savefig('my_first_plot.png')
 ```
 
+### 5. Training a Model (New)
+
+```python
+# Example model training code
+from drug_response_model import DrugResponsePredictor
+
+# Separate metadata and gene columns
+metadata_cols = ['cell_type', 'sm_name', 'sm_lincs_id', 'SMILES', 'control']
+gene_cols = [col for col in data.columns if col not in metadata_cols]
+
+# Prepare data
+X = data[['cell_type', 'sm_name']]  # Categorical features
+y = data[gene_cols]  # Gene expression to predict
+
+# Create and train model
+model = DrugResponsePredictor(n_estimators=100)
+model.fit(X, y, top_n_genes=100)  # Train on top 100 most variable genes
+
+# Visualize results
+model.visualize_predictions(n_genes=3)
+```
+
+### 6. Analyzing Molecular Structures (New)
+
+```python
+# Example molecular analysis code
+from molecular_analysis import MolecularAnalyzer
+
+# Create analyzer object
+analyzer = MolecularAnalyzer(data['SMILES'])
+
+# Calculate molecular descriptors
+descriptors = analyzer.calculate_descriptors()
+print(descriptors.head())
+
+# Analyze drug-likeness
+drug_likeness = analyzer.analyze_drug_likeness()
+```
+
 ## Common Operations
 
 ### 1. Data Loading
@@ -102,12 +141,45 @@ plt.title('Correlation Heatmap')
 plt.savefig('correlation_heatmap.png')
 ```
 
+### 4. Making Predictions (New)
+```python
+# Using the trained model for predictions
+import pickle
+
+# Load saved model
+with open('models/drug_response_model.pkl', 'rb') as f:
+    model = pickle.load(f)
+
+# Example data
+example_data = {
+    'drug_name': ['Clotrimazole', 'Triptolide'],
+    'cell_type': ['NK cells', 'T cells CD4+']
+}
+example_df = pd.DataFrame(example_data)
+
+# Make predictions
+predictions = model.predict(example_df)
+```
+
+## Running the Complete Pipeline (New)
+
+For a complete analysis and model training workflow:
+
+```bash
+# Run the model training script
+python train_model.py
+
+# Make predictions on test data
+python predict.py --test
+```
+
 ## Next Steps
 
 After completing this tutorial, you can:
-1. Explore the `exploration.ipynb` notebook
+1. Explore the `exploration_notebook.ipynb` notebook for deeper analysis
 2. Try different visualizations in `visualize_data.py`
-3. Modify analysis parameters in `analyze_data.py`
+3. Modify model parameters in `drug_response_model.py`
+4. Analyze drug structures with the `molecular_analysis.py` module
 
 ## Troubleshooting
 
@@ -130,6 +202,12 @@ Common Issues and Solutions:
    Solution: Check matplotlib backend
    import matplotlib
    matplotlib.use('Agg')  # For systems without display
+   ```
+
+4. **RDKit Import Error** (New)
+   ```
+   Solution: Install RDKit separately if pip install fails
+   conda install -c conda-forge rdkit
    ```
 
 ## Getting Help

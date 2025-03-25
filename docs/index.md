@@ -24,6 +24,16 @@ Welcome to the documentation for the Single-Cell Perturbations Analysis project.
   - Basic visualizations
   - Troubleshooting
 
+### 4. Machine Learning Components (New)
+- Drug Response Models
+  - Data preprocessing
+  - Model training
+  - Prediction capabilities
+- Molecular Analysis
+  - Chemical structure analysis
+  - Drug clustering
+  - Physicochemical properties
+
 ## Quick Links
 
 ### For Beginners
@@ -33,13 +43,20 @@ Welcome to the documentation for the Single-Cell Perturbations Analysis project.
 
 ### For Technical Users
 1. Review the [Technical Architecture](architecture/technical_architecture.md)
-2. Explore the source code in `src/`
-3. Check out the Jupyter notebooks
+2. Explore the machine learning components
+3. Check out the Jupyter notebooks in the repository
 
 ### For Biologists
 1. Read the [Project Overview](project_overview.md)
 2. Focus on the cell types and drug responses
 3. Review the visualization examples
+4. Explore drug structure analysis
+
+### For Data Scientists (New)
+1. Review the predictive models in the repository
+2. Understand the feature selection approaches
+3. Explore the molecular analysis capabilities
+4. Try building your own models using our data
 
 ## Contributing
 

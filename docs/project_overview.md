@@ -41,8 +41,8 @@ Cells → Add Drugs → Measure Changes → Collect Data
 
 ### 2. Analysis Pipeline
 ```
-Raw Data → Clean → Process → Analyze → Visualize
- 📊        🧹      ⚙️        📈       📊
+Raw Data → Clean → Process → Analyze → Visualize → Predict
+ 📊        🧹      ⚙️        📈       📊        🔮
 ```
 
 ### 3. Cell Types We Study
@@ -52,6 +52,17 @@ Raw Data → Clean → Process → Analyze → Visualize
 4. T regulatory cells
 5. B cells
 6. Monocytes
+
+### 4. Drug Analysis (New)
+```
+Drug Structure → Molecular Properties → Similarity Analysis
+ ⚗️             💊                  🔍
+```
+
+### 5. Machine Learning Models (New)
+- Drug Response Prediction
+- Cell Type Classification
+- Gene Expression Forecasting
 
 ## How to Read Our Results
 
@@ -69,19 +80,36 @@ No Response:       ➡️
 Negative Response: 📉
 ```
 
+### Molecular Structure Analysis (New)
+```
+Similar Drugs:      🔵🔵  
+Different Drugs:    🔵🔴
+Drug Properties:    💊📊
+```
+
+### Prediction Insights (New)
+```
+High Confidence:    ✅✅✅
+Medium Confidence:  ✅✅⬜️
+Low Confidence:     ✅⬜️⬜️
+```
+
 ## Real-World Applications
 
 1. Drug Development 💊
    - Testing new medicines
    - Understanding side effects
    - Improving treatments
+   - **New:** Predicting drug efficacy before testing
 
 2. Disease Research 🔬
    - Cancer studies
    - Immune system disorders
    - Personalized medicine
+   - **New:** Molecular mechanism exploration
 
 3. Treatment Optimization 📋
    - Finding best drug combinations
    - Reducing side effects
-   - Personalizing doses 
+   - Personalizing doses
+   - **New:** AI-guided treatment selection 

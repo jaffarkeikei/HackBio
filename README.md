@@ -1,34 +1,79 @@
-# Welcome to the HackOS 4 Repository
+# HackBio: Single-Cell Perturbations Analysis
 
 ## Overview 
-Hey! Welcome to HackOS 4. This repository contains technical information on the challenge, including guides and a brief dataset visualization.
-With this repository, we hope to provide you a starting point to work on your machine learning models and hack on the Single-Cell Perturbations dataset! 
+This repository contains a comprehensive toolkit for analyzing single-cell perturbation data from the NeurIPS 2023 Competition. The project focuses on understanding how different drugs (small molecules) affect various cell types at the gene expression level.
 
-## Getting Started
-To get started with this repository:
-
-1. Fork the repository by visiting https://github.com/aniketsrinivasan/hackos-4 and clicking the "Fork" button in the top-right corner
-2. Clone your forked repository:
-```bash
-git clone https://github.com/YOUR_USERNAME/hackos-4.git
-cd hackos-4
+## Project Structure
+```
+.
+├── dataset/              # Contains the main dataset files
+├── docs/                 # Documentation and additional resources
+├── plots/                # Generated visualizations and plots
+├── analyze_data.py       # Core data analysis functions
+├── visualize_data.py     # Data visualization utilities
+├── dataset.ipynb         # Main notebook for data processing
+├── exploration.ipynb     # Interactive data exploration notebook
+└── data_summary.txt     # Dataset statistics and metadata
 ```
 
-## Dataset
-Our main dataset is from the NeurIPS 2023 Competition, and the main training set can be found in `dataset/de_train_split.parquet`. 
-The Jupyter Notebook `dataset.ipynb` demonstrates how to load this dataset, convert and save it as a CSV file, and convert it into popular ML formats (such as Tensors). 
+## Dataset Overview
+The project works with a rich single-cell perturbation dataset that includes:
+- 501 total samples
+- 119 unique drugs
+- 6 unique cell types
+- 18,211 genes measured
+- 12 control samples and 489 treatment samples
 
-All the relevant datasets can be found on the official Kaggle site for the NeurIPS 2023 Competition. Feel free to use any dataset(s) that follow the competition guidelines! 
+The main dataset is stored in `dataset/de_train_split.parquet` and contains gene expression data after drug perturbations.
 
-https://www.kaggle.com/competitions/open-problems-single-cell-perturbations/overview
+## Key Components
 
-## Hackathon Guide: Past Approaches, Ideas, etc.
-We've compiled a brief guide for the hackathon containing information about past approaches to the challenge that worked (NeurIPS 2023), as well as a collection of 
-ideas you might want to build. By no means do you have to follow this guide, but if you're stuck at any point, we feel this is a good place to look! 
+### Data Processing
+- `dataset.ipynb`: A comprehensive notebook that demonstrates:
+  - Loading and parsing the parquet dataset
+  - Converting data to various formats (CSV, Tensors)
+  - Basic data preprocessing steps
 
-https://docs.google.com/document/d/1i9fo4z8QdXA9L17yZ34uPA2vfjbW8P8T5cG5gRZQuAc/edit?usp=sharing
+### Analysis Tools
+- `analyze_data.py`: Contains functions for:
+  - Statistical analysis of gene expression
+  - Drug response analysis
+  - Cell type-specific effects
 
-## Event Luma Page
-You can find more information about the event in general, as well as links to our Discord server, here: https://lu.ma/xrt0iiqx. 
+### Visualization
+- `visualize_data.py`: Provides tools for:
+  - Gene expression visualization
+  - Drug response plots
+  - Cell type comparison charts
+- Generated plots are saved in the `plots/` directory
 
-Feel free to reach out to myself (@anixus on Discord) or Laurence Liang (@larryl4643 on Discord) if you have any questions! 
+### Exploration
+- `exploration.ipynb`: An interactive notebook for:
+  - Data exploration
+  - Hypothesis testing
+  - Quick visualizations
+
+## Getting Started
+
+1. Clone the repository:
+```bash
+git clone https://github.com/jaffarkeikei/HackBio.git
+cd HackBio
+```
+
+2. Install required dependencies (recommended to use a virtual environment):
+```bash
+pip install pandas numpy matplotlib seaborn scikit-learn
+```
+
+3. Start with `dataset.ipynb` to understand the data structure and basic processing steps.
+
+## Contributing
+Feel free to contribute to this project by:
+- Adding new analysis methods
+- Improving visualizations
+- Enhancing documentation
+- Reporting issues
+
+## License
+This project is open-source and available under the MIT License.

@@ -1,0 +1,4 @@
+mean_expression: 0.3239840139761183
+std_expression: 2.1270832738867598
+median_molecular_weight: 449.118543904
+num_high_variable_genes: 9105

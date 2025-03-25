@@ -1,0 +1,7 @@
+=== Dataset Summary ===
+total_samples: 501
+unique_drugs: 119
+unique_cell_types: 6
+num_genes: 18211
+control_samples: 12
+treatment_samples: 489

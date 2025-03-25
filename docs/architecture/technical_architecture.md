@@ -2,141 +2,91 @@
 
 ## System Overview
 
-```mermaid
-graph TD
-    A[Raw Data] --> B[Data Processing]
-    B --> C[Analysis Pipeline]
-    C --> D[Visualization Engine]
-    D --> E[Results & Insights]
-    C --> F[Predictive Models]
-    F --> E
-    A --> G[Molecular Analysis]
-    G --> E
+The system architecture is illustrated in the following diagram:
 
-    subgraph Data Processing
-        B1[Load Parquet Files] --> B2[Data Cleaning]
-        B2 --> B3[Feature Engineering]
-    end
+![System Architecture](/docs/images/system_architecture.md)
 
-    subgraph Analysis Pipeline
-        C1[Statistical Analysis] --> C2[Drug Response Analysis]
-        C2 --> C3[Cell Type Analysis]
-    end
-
-    subgraph Visualization Engine
-        D1[Generate Plots] --> D2[Create Heatmaps]
-        D2 --> D3[Export Visualizations]
-    end
-    
-    subgraph Predictive Models
-        F1[Drug Response Model] --> F2[Cell Type Classifier]
-        F2 --> F3[Prediction API]
-    end
-    
-    subgraph Molecular Analysis
-        G1[SMILES Processing] --> G2[Drug Descriptor Calculation]
-        G2 --> G3[Structural Similarity]
-    end
-```
+The system is structured as a modular pipeline for analyzing single-cell perturbation data, focusing on correlations between genetic expression, drug responses, and molecular properties.
 
 ## Data Flow Architecture
 
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   Input Data    │     │   Processing    │     │    Analysis     │
-│  ───────────    │     │   ───────────   │     │   ───────────   │
-│ - Parquet Files │ ──► │ - Data Cleaning │ ──► │ - Statistics    │
-│ - Metadata      │     │ - Normalization │     │ - Drug Effects  │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-       │                                                 │
-       ▼                                                 ▼
-┌─────────────────┐                        ┌─────────────────┐ 
-│  Molecular      │                        │   Predictive    │ 
-│  Analysis       │                        │   Models        │ 
-└─────────────────┘                        └─────────────────┘ 
-       │                                                 │
-       └─────────────────────┬──────────────────────────┘
-                             │
-                             ▼
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│    Outputs      │     │  Visualization  │     │    Analysis     │
-│   ───────────   │ ◄── │   ───────────   │ ◄── │   Results      │
-│ - Plots         │     │ - Matplotlib    │     │ - Insights      │
-│ - Reports       │     │ - Seaborn       │     │ - Patterns      │
-│ - Predictions   │     │ - Drug Profiles │     │ - Predictions   │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-```
+The following diagram illustrates how data flows through our system:
+
+![Data Flow](/docs/images/data_flow.md)
+
+Our data flow is designed to handle large datasets efficiently, with clean separation between data loading, processing, analysis, and visualization.
+
+## Analysis Pipeline
+
+The complete workflow of our analysis pipeline is shown here:
+
+![Analysis Pipeline](/docs/images/analysis_pipeline.md)
+
+This pipeline coordinates the various analysis components to transform raw input data into actionable biological insights.
 
 ## Component Details
 
-### 1. Data Processing Module
-- **Input Handler**: Manages parquet file loading
-- **Data Cleaner**: Removes artifacts and normalizes data
-- **Feature Engineer**: Creates derived features
+### Data Processing
+- Handles parsing, cleaning, and normalization of single-cell expression data
+- Processes molecular structure data from SMILES strings
+- Performs feature selection and dimensionality reduction
 
-### 2. Analysis Pipeline
-- **Statistical Engine**: Computes key metrics
-- **Drug Response Analyzer**: Evaluates perturbation effects
-- **Cell Type Analyzer**: Analyzes cell-specific responses
+### Analysis Pipeline
+- Orchestrates the end-to-end analysis workflow
+- Manages dependencies between analysis components
+- Provides configuration options for customizing analysis
 
-### 3. Visualization System
-- **Plot Generator**: Creates standard visualizations
-- **Heatmap Engine**: Generates expression heatmaps
-- **Export Module**: Saves high-quality figures
+### Visualization System
+- Generates correlation heatmaps
+- Creates molecular property visualizations
+- Produces performance metrics visualizations
+- Renders feature importance plots
 
-### 4. Predictive Models (New)
-- **Drug Response Predictor**: Predicts gene expression changes in response to drugs
-- **Cell Type Classifier**: Identifies cell types from gene expression data
-- **Model Evaluation**: Assesses model performance and provides insights
+### Predictive Models
+- Implements cell type classification models
+- Builds drug response prediction systems
+- Provides functionality for model serialization and loading
 
-### 5. Molecular Analysis (New)
-- **SMILES Processor**: Analyzes drug chemical structures
-- **Molecular Descriptor Calculator**: Computes physicochemical properties
-- **Structural Clustering**: Groups drugs by similarity
+### Molecular Analysis
+- Calculates molecular descriptors from structures
+- Performs clustering of molecular compounds
+- Analyzes structure-activity relationships
 
 ## File Structure
+
 ```
-project/
-├── dataset/
-│   ├── de_train_split.parquet
-│   └── de_test_split.parquet
-├── docs/
-│   ├── architecture/
-│   ├── tutorials/
-│   └── images/
-├── models/
-│   ├── cell_type_classifier.pkl
-│   └── drug_response_model.pkl
-├── plots/
-│   └── various visualization files
-├── analyze_data.py
-├── drug_response_model.py (New)
-├── molecular_analysis.py (New)
-├── predict.py (New)
-├── train_model.py (New)
-├── visualize_data.py
-├── dataset.ipynb
-├── exploration_notebook.ipynb (New)
-└── requirements.txt (New)
+/
+├── src/                       # Source code
+│   ├── molecular_analysis.py  # Molecular descriptor calculation and analysis
+│   ├── correlation_analysis.py # Correlation analysis between features
+│   ├── model_interpreter.py   # Model interpretation and visualization
+│   └── test_*.py              # Test scripts for each component
+├── models/                    # Saved model files
+├── plots/                     # Generated visualizations
+├── results/                   # Analysis results
+└── docs/                      # Documentation
+    ├── images/                # Architecture and workflow diagrams
+    ├── architecture/          # Technical documentation
+    └── tutorials/             # Usage tutorials
 ```
 
-## Technology Stack
+## Core Technologies
 
-### Core Technologies
-- **Python**: Primary programming language
-- **Pandas**: Data manipulation
-- **NumPy**: Numerical computations
+- **Python**: Primary implementation language
+- **Pandas/NumPy**: Data processing
+- **RDKit**: Molecular structure analysis
+- **Scikit-learn/XGBoost**: Machine learning models
 - **Matplotlib/Seaborn**: Visualization
-- **Scikit-learn**: Machine learning models
-- **RDKit**: Molecular analysis and cheminformatics
 
-### Data Formats
-- **Parquet**: Primary data storage
-- **CSV**: Data export format
-- **PNG**: Visualization output
-- **PKL**: Serialized model storage
+## Data Formats
 
-### Development Tools
-- **Jupyter**: Interactive analysis
+- **Input**: Parquet for expression data, CSV for metadata, SMILES for molecular structures
+- **Intermediate**: Pandas DataFrames
+- **Output**: CSV for analysis results, PNG/SVG for visualizations, Pickle for model serialization
+
+## Development Tools
+
 - **Git**: Version control
-- **GitHub**: Code repository 
+- **Jupyter Notebooks**: Exploratory analysis
+- **Python Type Hints**: Code documentation
+- **Docstrings**: Function and class documentation 

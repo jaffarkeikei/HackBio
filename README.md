@@ -3,6 +3,15 @@
 ## Overview 
 This repository contains a comprehensive toolkit for analyzing single-cell perturbation data from the NeurIPS 2023 Competition. The project focuses on understanding how different drugs (small molecules) affect various cell types at the gene expression level.
 
+## Architecture
+The project follows a modular architecture designed for analyzing single-cell perturbation data:
+
+- **System Architecture**: Detailed structure of system components - [View Diagram](/docs/images/system_architecture.md)
+- **Data Flow**: How data flows through the analysis pipeline - [View Diagram](/docs/images/data_flow.md) 
+- **Analysis Workflow**: Complete analysis steps and processes - [View Diagram](/docs/images/analysis_pipeline.md)
+
+For more detailed technical documentation, please see the [architecture documentation](/docs/architecture/technical_architecture.md).
+
 ## Project Structure
 ```
 .

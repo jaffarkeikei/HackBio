@@ -12,14 +12,11 @@ Welcome to the documentation for the Single-Cell Perturbations Analysis project.
 
 ### 2. Technical Documentation
 - [Technical Architecture](architecture/technical_architecture.md)
-  - System overview
-  - Data flow
+  - System overview with interactive diagrams
+  - Data flow visualization
+  - Analysis pipeline workflow
   - Component details
   - Technology stack
-- [Architecture Diagrams](images/)
-  - [System Architecture](images/system_architecture.md)
-  - [Data Flow Diagram](images/data_flow.md)
-  - [Analysis Pipeline](images/analysis_pipeline.md)
 - [Biological Concepts](architecture/1_biological_concepts.md) (New)
   - Cell biology fundamentals
   - Gene expression and regulation

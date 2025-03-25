@@ -6,11 +6,11 @@ This repository contains a comprehensive toolkit for analyzing single-cell pertu
 ## Architecture
 The project follows a modular architecture designed for analyzing single-cell perturbation data:
 
-- **System Architecture**: Detailed structure of system components - [View Diagram](/docs/images/system_architecture.md)
-- **Data Flow**: How data flows through the analysis pipeline - [View Diagram](/docs/images/data_flow.md) 
-- **Analysis Workflow**: Complete analysis steps and processes - [View Diagram](/docs/images/analysis_pipeline.md)
+- **System Architecture**: The architecture diagrams can be found in the [technical documentation](/docs/architecture/technical_architecture.md#system-overview)
+- **Data Flow**: View the data flow in the [technical documentation](/docs/architecture/technical_architecture.md#data-flow-architecture)
+- **Analysis Pipeline**: Review the complete workflow in the [technical documentation](/docs/architecture/technical_architecture.md#analysis-pipeline)
 
-For more detailed technical documentation, please see the [architecture documentation](/docs/architecture/technical_architecture.md).
+The documentation includes interactive diagrams that show how the different components of the system work together.
 
 ## Project Structure
 ```

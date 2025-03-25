@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from rdkit import Chem
-from rdkit.Chem import Draw, AllChem, Descriptors, Lipinski, rdMolDescriptors
+from rdkit.Chem import Draw, AllChem, Descriptors, Lipinski, rdMolDescriptors, DataStructs
 from rdkit.Chem.Draw import IPythonConsole
 from rdkit.Chem.Fingerprints import FingerprintMols
 from sklearn.decomposition import PCA
@@ -25,7 +25,7 @@ class MolecularAnalyzer:
         """
         Initialize the molecular analyzer.
         
-        Parameters:
+        Parameters: 
         -----------
         smiles_data : pandas Series or list
             SMILES strings representing the molecular structures

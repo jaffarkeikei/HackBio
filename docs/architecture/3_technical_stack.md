@@ -75,8 +75,8 @@ graph TD
 │  │  │  1   │ val  │ val  │ ...   │    │   │
 │  │  └──────┴──────┴──────┴───────┘    │   │
 │  └────────────────────────────────────┘   │
-│                   ▲                        │
-│                   │                        │
+│                   ▲                       │
+│                   │                       │
 │  ┌────────────────────────────────────┐   │
 │  │             NumPy                  │   │
 │  │  ┌──────────────────────────────┐  │   │
@@ -167,7 +167,7 @@ Visualization hierarchy:
 │                                               │
 │  ┌─────────────────────┐  ┌────────────────┐  │
 │  │    Matplotlib       │  │    Seaborn     │  │
-│  │  (Low-level API)    │  │ (High-level API)│  │
+│  │  (Low-level API)    │  │(High-level API)│  │
 │  └─────────────────────┘  └────────────────┘  │
 │  ┌────────────────────────────────────────┐   │
 │  │           Output Formats               │   │
@@ -232,18 +232,18 @@ Key RDKit capabilities:
 │               Jupyter Notebook                │
 ├───────────────────────────────────────────────┤
 │ ┌─────────────────────────────────────────┐   │
-│ │ # Markdown Cell                          │   │
-│ │ This is explanatory text                 │   │
+│ │ # Markdown Cell                         │   │
+│ │ This is explanatory text                │   │
 │ └─────────────────────────────────────────┘   │
 │ ┌─────────────────────────────────────────┐   │
-│ │ # Code Cell                              │   │
-│ │ import pandas as pd                      │   │
-│ │ df = pd.read_parquet('data.parquet')     │   │
-│ │ df.head()                                │   │
+│ │ # Code Cell                             │   │
+│ │ import pandas as pd                     │   │
+│ │ df = pd.read_parquet('data.parquet')    │   │
+│ │ df.head()                               │   │
 │ └─────────────────────────────────────────┘   │
 │ ┌─────────────────────────────────────────┐   │
-│ │ # Output Cell                            │   │
-│ │ [Table output from above command]        │   │
+│ │ # Output Cell                           │   │
+│ │ [Table output from above command]       │   │
 │ └─────────────────────────────────────────┘   │
 └───────────────────────────────────────────────┘
 ```

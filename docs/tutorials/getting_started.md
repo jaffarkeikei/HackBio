@@ -176,6 +176,11 @@ python fixed_analysis.py
 
 # For the final optimized solution with all fixes
 python final_analysis.py
+
+# For the advanced neural network models with SVD (following NeurIPS 2023 winners)
+python advanced_model.py --svd_components 100  # Default: 100 components
+python advanced_model.py --svd_components 50   # Try with fewer components
+python advanced_model.py --epochs 50 --batch_size 64  # Customize training parameters
 ```
 
 The **final_analysis.py** script is the most robust solution with:
@@ -185,6 +190,12 @@ The **final_analysis.py** script is the most robust solution with:
 - Comprehensive error handling
 - Performance evaluation metrics
 - Visualization generation
+
+The **advanced_model.py** script implements the winning approaches from NeurIPS 2023:
+- SVD dimensionality reduction
+- 1D CNN, LSTM, and GRU neural network models
+- Model ensembling
+- Early stopping and performance evaluation
 
 ## Next Steps
 

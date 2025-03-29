@@ -93,6 +93,35 @@ Result:
 └──────────────┴────────────┴───────────┴─────────┴──────────┘
 ```
 
+### XGBoost Feature Name Compatibility
+
+When working with XGBoost for multi-output regression, feature names must be clean strings without special characters:
+
+```python
+import re
+
+# Clean feature names for XGBoost compatibility
+X_clean.columns = [re.sub(r'[\[\]<>]', '_', col) for col in X_clean.columns]
+```
+
+This is required because XGBoost has strict requirements for feature names. Specifically:
+1. Names must be strings
+2. Names cannot contain brackets ([]), angle brackets (<>), or other special characters
+3. Names must be unique
+
+Example transformation:
+
+```
+Before                      After
+┌────────────────────┐      ┌────────────────────┐
+│Feature[0]          │      │Feature_0_          │
+├────────────────────┤      ├────────────────────┤
+│cell_type[NK cells] │  →   │cell_type_NK cells_ │
+├────────────────────┤      ├────────────────────┤
+│SMILES<aromatic>    │      │SMILES_aromatic_    │
+└────────────────────┘      └────────────────────┘
+```
+
 ## Feature Engineering
 
 ### Feature Selection Methods

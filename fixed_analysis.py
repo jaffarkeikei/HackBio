@@ -89,6 +89,46 @@ def step3_train_models_fixed(original_df=None, encoded_df=None):
         
         logger.info(f"Training model on {len(top_genes)} top variable genes")
         
+        # Properly prepare features - drop any non-numeric columns or encode them
+        # First, identify all the columns we need to check
+        X_columns = [col for col in encoded_df.columns if col not in original_gene_cols]
+        
+        # Create a clean features dataframe
+        X_clean = encoded_df[X_columns].copy()
+        
+        # Check for non-numeric columns
+        non_numeric_cols = []
+        for col in X_clean.columns:
+            if X_clean[col].dtype == 'object' or pd.api.types.is_string_dtype(X_clean[col]):
+                non_numeric_cols.append(col)
+        
+        logger.info(f"Found {len(non_numeric_cols)} non-numeric columns that need encoding: {non_numeric_cols}")
+        
+        # One-hot encode any remaining categorical columns
+        if non_numeric_cols:
+            # Create a one-hot encoder for these columns
+            encoder = OneHotEncoder(sparse_output=False)
+            encoded_cats = encoder.fit_transform(X_clean[non_numeric_cols])
+            
+            # Create column names for the encoded categories
+            encoded_col_names = []
+            for i, col in enumerate(non_numeric_cols):
+                for cat in encoder.categories_[i]:
+                    encoded_col_names.append(f"{col}_{cat}")
+            
+            # Create a dataframe with the encoded categories
+            encoded_df_cats = pd.DataFrame(encoded_cats, columns=encoded_col_names, index=X_clean.index)
+            
+            # Drop the original categorical columns and join the encoded ones
+            X_clean = X_clean.drop(columns=non_numeric_cols)
+            X_clean = pd.concat([X_clean, encoded_df_cats], axis=1)
+            
+            logger.info(f"One-hot encoded {len(non_numeric_cols)} categorical columns into {len(encoded_col_names)} features")
+        
+        # Final check to make sure all columns are numeric
+        X_clean = X_clean.select_dtypes(include=['number'])
+        logger.info(f"Final feature matrix shape: {X_clean.shape}")
+        
         # Create base models properly wrapped for multi-output regression
         # Fix: Use MultiOutputRegressor to handle multiple target columns
         rf_model = MultiOutputRegressor(
@@ -100,7 +140,7 @@ def step3_train_models_fixed(original_df=None, encoded_df=None):
         )
         
         # Split data for training
-        X = encoded_df.drop(original_gene_cols, axis=1, errors='ignore')
+        X = X_clean
         y = original_df[top_genes]
         
         logger.info(f"Feature matrix shape: {X.shape}, Target matrix shape: {y.shape}")

@@ -31,6 +31,9 @@ from molecular_analysis import MolecularAnalyzer
 from correlation_analysis import CorrelationAnalyzer
 from model_interpreter import ModelInterpreter
 import logging
+from sklearn.decomposition import TruncatedSVD
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.ensemble import VotingRegressor
 
 # Set up logging
 logging.basicConfig(
@@ -74,8 +77,8 @@ def analyze_molecular_properties():
     descriptors = analyzer.calculate_descriptors()
     
     # Save descriptors to CSV
-    descriptors.to_csv('molecular_descriptors.csv', index=False)
-    logger.info(f"Saved molecular descriptors for {len(descriptors)} compounds to molecular_descriptors.csv")
+    descriptors.to_csv('results/molecular_descriptors.csv', index=False)
+    logger.info(f"Saved molecular descriptors for {len(descriptors)} compounds to results/molecular_descriptors.csv")
     
     # Analyze drug likeness
     drug_likeness = analyzer.analyze_drug_likeness()
@@ -100,8 +103,219 @@ def analyze_molecular_properties():
     return descriptors
 
 
+def preprocess_data_with_svd(df, n_components=100):
+    """Apply dimensionality reduction to gene expression data using truncated SVD
+    
+    Parameters:
+    -----------
+    df : pandas DataFrame
+        Input dataset with gene expression data
+    n_components : int
+        Number of components to reduce to
+        
+    Returns:
+    --------
+    tuple
+        Original dataframe and reduced gene expression features
+    """
+    logger.info(f"Applying dimensionality reduction with SVD to {n_components} components")
+    
+    # Identify metadata columns
+    metadata_cols = ['cell_type', 'sm_name', 'sm_lincs_id', 'SMILES', 'control']
+    gene_cols = [col for col in df.columns if col not in metadata_cols]
+    
+    # Apply SVD reduction
+    svd = TruncatedSVD(n_components=n_components, random_state=42)
+    reduced_data = svd.fit_transform(df[gene_cols])
+    
+    # Create column names for reduced features
+    reduced_cols = [f'svd_comp_{i}' for i in range(n_components)]
+    
+    # Create a new dataframe with reduced features and metadata
+    reduced_df = pd.DataFrame(reduced_data, columns=reduced_cols)
+    for col in metadata_cols:
+        if col in df.columns:
+            reduced_df[col] = df[col].values
+    
+    # Calculate explained variance
+    explained_variance = svd.explained_variance_ratio_.sum()
+    logger.info(f"SVD explained variance with {n_components} components: {explained_variance:.4f}")
+    
+    # Save SVD model for later use
+    import pickle
+    with open('models/svd_model.pkl', 'wb') as f:
+        pickle.dump(svd, f)
+    
+    return df, reduced_df
+
+
+def apply_onehot_encoding(df):
+    """Apply one-hot encoding to categorical features
+    
+    Parameters:
+    -----------
+    df : pandas DataFrame
+        Input dataset
+        
+    Returns:
+    --------
+    pandas DataFrame
+        Dataset with one-hot encoded categorical features
+    """
+    logger.info("Applying one-hot encoding to categorical features")
+    
+    # Create encoder for cell types
+    cell_encoder = OneHotEncoder(sparse_output=False)
+    cell_encoded = cell_encoder.fit_transform(df[['cell_type']])
+    cell_cols = [f'cell_{cat}' for cat in cell_encoder.categories_[0]]
+    
+    # Create encoder for drug names
+    drug_encoder = OneHotEncoder(sparse_output=False)
+    drug_encoded = drug_encoder.fit_transform(df[['sm_name']])
+    drug_cols = [f'drug_{cat}' for cat in drug_encoder.categories_[0]]
+    
+    # Create new dataframe with encoded features
+    encoded_df = pd.DataFrame(cell_encoded, columns=cell_cols)
+    encoded_df = pd.concat([encoded_df, pd.DataFrame(drug_encoded, columns=drug_cols)], axis=1)
+    
+    # Add other columns from original dataframe
+    for col in df.columns:
+        if col not in ['cell_type', 'sm_name']:
+            encoded_df[col] = df[col].values
+    
+    # Save encoders for later use
+    import pickle
+    with open('models/encoders.pkl', 'wb') as f:
+        pickle.dump({'cell_encoder': cell_encoder, 'drug_encoder': drug_encoder}, f)
+    
+    return encoded_df
+
+
+def add_statistical_features(df):
+    """Add statistical features derived from gene expression data
+    
+    Parameters:
+    -----------
+    df : pandas DataFrame
+        Input dataset with gene expression data
+        
+    Returns:
+    --------
+    pandas DataFrame
+        Dataset with additional statistical features
+    """
+    logger.info("Adding statistical features")
+    
+    # Identify metadata columns
+    metadata_cols = ['cell_type', 'sm_name', 'sm_lincs_id', 'SMILES', 'control']
+    gene_cols = [col for col in df.columns if col not in metadata_cols]
+    
+    # Calculate statistics for each sample
+    df['gene_mean'] = df[gene_cols].mean(axis=1)
+    df['gene_std'] = df[gene_cols].std(axis=1)
+    df['gene_median'] = df[gene_cols].median(axis=1)
+    df['gene_q1'] = df[gene_cols].quantile(0.25, axis=1)
+    df['gene_q3'] = df[gene_cols].quantile(0.75, axis=1)
+    df['gene_iqr'] = df['gene_q3'] - df['gene_q1']
+    
+    return df
+
+
+def train_models_optimized():
+    """Train optimized drug response models using advanced techniques"""
+    logger.info("Starting optimized model training...")
+    
+    # Load and preprocess data
+    df = pd.read_parquet('dataset/de_train_split.parquet')
+    
+    # Step 1: Add statistical features
+    df_with_stats = add_statistical_features(df)
+    
+    # Step 2: Apply SVD for dimensionality reduction
+    original_df, reduced_df = preprocess_data_with_svd(df_with_stats, n_components=100)
+    
+    # Step 3: Apply one-hot encoding
+    encoded_df = apply_onehot_encoding(reduced_df)
+    
+    # Save processed dataframes for reference
+    encoded_df.to_parquet('results/processed_data.parquet')
+    
+    try:
+        # Run the modified training script with the processed data
+        start_time = time.time()
+        
+        # Option 1: Run as subprocess with the processed data path
+        # subprocess.run(["python", "train_model.py", "--data", "results/processed_data.parquet"], check=True)
+        
+        # Option 2: Create an ensemble model directly here
+        # For demonstration, we'll implement a simple version here
+        logger.info("Creating ensemble model with RandomForest and XGBoost")
+        
+        # Identify feature and target columns
+        metadata_cols = ['cell_type', 'sm_name', 'sm_lincs_id', 'SMILES', 'control']
+        gene_cols = [col for col in original_df.columns if col not in metadata_cols]
+        
+        # Using only a subset of genes for demonstration (would use all in production)
+        from sklearn.ensemble import RandomForestRegressor
+        import xgboost as xgb
+        
+        # Create base models for ensemble
+        rf_model = RandomForestRegressor(n_estimators=100, max_depth=20, random_state=42, n_jobs=-1)
+        xgb_model = xgb.XGBRegressor(n_estimators=100, max_depth=5, learning_rate=0.1, random_state=42)
+        
+        # Create ensemble model
+        ensemble = VotingRegressor([
+            ('rf', rf_model),
+            ('xgb', xgb_model)
+        ])
+        
+        # For demonstration, train on a small subset of genes (in practice would use all genes)
+        top_genes = gene_cols[:10]  # First 10 genes for demonstration
+        
+        # Split data for training
+        from sklearn.model_selection import train_test_split
+        X = encoded_df.drop(gene_cols, axis=1)
+        y = original_df[top_genes]
+        
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        
+        # Train ensemble model
+        ensemble.fit(X_train, y_train)
+        
+        # Save ensemble model
+        import pickle
+        with open('models/ensemble_model.pkl', 'wb') as f:
+            pickle.dump(ensemble, f)
+        
+        # Save list of top genes used
+        with open('models/top_genes_used.pkl', 'wb') as f:
+            pickle.dump(top_genes, f)
+        
+        # Evaluate model
+        from sklearn.metrics import r2_score, mean_squared_error
+        y_pred = ensemble.predict(X_test)
+        
+        # Calculate metrics
+        r2 = r2_score(y_test, y_pred)
+        mse = mean_squared_error(y_test, y_pred)
+        
+        # Save metrics to results
+        pd.DataFrame({
+            'Metric': ['MSE', 'R²'],
+            'Value': [mse, r2]
+        }).to_csv('results/ensemble_model_evaluation.csv', index=False)
+        
+        logger.info(f"Ensemble model training completed in {time.time() - start_time:.2f} seconds")
+        logger.info(f"Ensemble model R²: {r2:.4f}, MSE: {mse:.4f}")
+        
+        return True
+    except Exception as e:
+        logger.error(f"Optimized model training failed with error: {e}")
+        return False
+
+
 def train_models():
-    """Train the drug response models"""
+    """Train the standard drug response models"""
     logger.info("Starting model training...")
     
     try:
@@ -173,14 +387,17 @@ def interpret_models():
     logger.info("Starting model interpretation...")
     
     # Check if model files exist
-    if not os.path.exists('models/drug_response_model.pkl'):
-        logger.error("Model file not found. Please run train_model.py first.")
+    if not os.path.exists('models/drug_response_model.pkl') and not os.path.exists('models/ensemble_model.pkl'):
+        logger.error("No model files found. Please run train_model.py or train_models_optimized() first.")
         return False
     
     # Initialize interpreter
+    model_path = 'models/ensemble_model.pkl' if os.path.exists('models/ensemble_model.pkl') else 'models/drug_response_model.pkl'
+    genes_path = 'models/top_genes_used.pkl' if os.path.exists('models/top_genes_used.pkl') else 'models/top_variable_genes.pkl'
+    
     interpreter = ModelInterpreter(
-        model_path='models/drug_response_model.pkl',
-        top_genes_path='models/top_variable_genes.pkl'
+        model_path=model_path,
+        top_genes_path=genes_path
     )
     
     # Load dataset
@@ -215,6 +432,7 @@ def main():
     parser = argparse.ArgumentParser(description="Run the full analysis pipeline for single-cell perturbations")
     parser.add_argument('--no-train', action='store_true', help='Skip model training')
     parser.add_argument('--interpret-only', action='store_true', help='Only run model interpretation')
+    parser.add_argument('--optimize', action='store_true', help='Use optimized model training techniques')
     args = parser.parse_args()
     
     # Set up environment
@@ -237,7 +455,11 @@ def main():
         # Step 2: Train models (if not skipped)
         if not args.no_train:
             try:
-                train_success = train_models()
+                if args.optimize:
+                    train_success = train_models_optimized()
+                else:
+                    train_success = train_models()
+                    
                 if not train_success:
                     logger.warning("Model training was not successful. Continuing with existing models.")
             except Exception as e:
@@ -254,8 +476,28 @@ def main():
             interpret_models()
         except Exception as e:
             logger.error(f"Model interpretation failed: {e}")
-    
-    logger.info("Analysis pipeline complete")
+        
+        logger.info("Analysis pipeline complete")
+        
+        # Generate summary report
+        try:
+            summary = {
+                "Molecular Analysis": os.path.exists("results/molecular_descriptors.csv"),
+                "Model Training": os.path.exists("models/drug_response_model.pkl") or os.path.exists("models/ensemble_model.pkl"),
+                "Correlation Analysis": os.path.exists("results/property_gene_correlations.csv"),
+                "Model Interpretation": os.path.exists("results/model_evaluation.csv"),
+            }
+            
+            with open("results/analysis_summary.txt", "w") as f:
+                f.write("Analysis Pipeline Summary\n")
+                f.write("========================\n\n")
+                for step, completed in summary.items():
+                    status = "Completed" if completed else "Not completed"
+                    f.write(f"{step}: {status}\n")
+            
+            logger.info("Generated analysis summary report")
+        except Exception as e:
+            logger.error(f"Failed to generate summary report: {e}")
 
 
 if __name__ == "__main__":

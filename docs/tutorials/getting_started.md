@@ -166,12 +166,25 @@ predictions = model.predict(example_df)
 For a complete analysis and model training workflow:
 
 ```bash
-# Run the model training script
-python train_model.py
+# Run the step-by-step pipeline (using complete_analysis.py)
+python complete_analysis.py --step 1  # Start with molecular analysis
+python complete_analysis.py --step 2  # Continue with data preprocessing
+python complete_analysis.py --step 3  # Run model training
 
-# Make predictions on test data
-python predict.py --test
+# For the fixed implementation of multi-output regression
+python fixed_analysis.py
+
+# For the final optimized solution with all fixes
+python final_analysis.py
 ```
+
+The **final_analysis.py** script is the most robust solution with:
+- Complete categorical feature encoding
+- XGBoost feature name compatibility
+- Multi-output regression handling
+- Comprehensive error handling
+- Performance evaluation metrics
+- Visualization generation
 
 ## Next Steps
 

@@ -145,6 +145,9 @@ This pipeline coordinates the various analysis components to transform raw input
 │   ├── molecular_analysis.py  # Molecular descriptor calculation and analysis
 │   ├── correlation_analysis.py # Correlation analysis between features
 │   ├── model_interpreter.py   # Model interpretation and visualization
+│   ├── complete_analysis.py   # Step-by-step analysis pipeline script
+│   ├── fixed_analysis.py      # Multi-output regression model implementation
+│   ├── final_analysis.py      # Final solution with all fixes and optimizations
 │   └── test_*.py              # Test scripts for each component
 ├── models/                    # Saved model files
 ├── plots/                     # Generated visualizations
@@ -161,6 +164,8 @@ This pipeline coordinates the various analysis components to transform raw input
 - **Pandas/NumPy**: Data processing
 - **RDKit**: Molecular structure analysis
 - **Scikit-learn/XGBoost**: Machine learning models
+  - Using MultiOutputRegressor for gene expression prediction
+  - Special handling for XGBoost feature name compatibility
 - **Matplotlib/Seaborn**: Visualization
 
 ## Data Formats

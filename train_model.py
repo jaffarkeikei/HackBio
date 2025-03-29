@@ -377,9 +377,9 @@ class DrugResponsePredictor:
                 raise ValueError(f"Dataset must contain '{col}' column")
         
         # Identify metadata columns
-        metadata_cols = ['cell_type', 'sm_name', 'sm_lincs_id', 'SMILES', 'control']
-        gene_cols = [col for col in df.columns if col not in metadata_cols]
-        
+metadata_cols = ['cell_type', 'sm_name', 'sm_lincs_id', 'SMILES', 'control']
+gene_cols = [col for col in df.columns if col not in metadata_cols]
+
         print(f"Dataset contains {len(gene_cols)} gene expression features")
         
         # Filter out control samples
@@ -464,8 +464,8 @@ class DrugResponsePredictor:
             )
         else:
             raise ValueError(f"Unknown model type: {self.model_type}")
-        
-        # Train model
+
+# Train model
         model.fit(X_train, y_train)
         self.model = model
         
@@ -728,8 +728,8 @@ def main():
         # Plot results
         classifier.plot_confusion_matrix(results)
         classifier.plot_feature_importance()
-        
-        # Save model
+
+# Save model
         classifier.save_model(os.path.join(args.save_dir, 'cell_type_classifier.pkl'))
         
         # Save top genes for reference
@@ -754,8 +754,8 @@ def main():
         
         # Plot results
         predictor.plot_prediction_performance(results)
-        
-        # Save model
+
+# Save model
         predictor.save_model(os.path.join(args.save_dir, 'drug_response_predictor.pkl'))
         
         # Save top genes for reference

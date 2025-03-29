@@ -59,13 +59,15 @@ Welcome to the documentation for the Single-Cell Perturbations Analysis project.
 
 ### For Beginners
 1. Start with the [Project Overview](project_overview.md)
-2. Follow the [Getting Started Guide](tutorials/getting_started.md)
-3. Try the example code in the tutorials
+2. Check the [Project Summary](../PROJECT_SUMMARY.md) for a concise overview of results
+3. Follow the [Getting Started Guide](tutorials/getting_started.md)
+4. Try the example code in the tutorials
 
 ### For Technical Users
 1. Review the [Technical Architecture](architecture/technical_architecture.md)
 2. Explore the machine learning components
 3. Check out the Jupyter notebooks in the repository
+4. See our solutions to common issues in the [Project Summary](../PROJECT_SUMMARY.md)
 
 ### For Biologists
 1. Read the [Project Overview](project_overview.md)
@@ -78,6 +80,7 @@ Welcome to the documentation for the Single-Cell Perturbations Analysis project.
 2. Understand the [Data Structure](architecture/2_data_structure.md)
 3. Explore the molecular analysis capabilities
 4. Try building your own models using our data
+5. See performance metrics in the [Project Summary](../PROJECT_SUMMARY.md)
 
 ## Contributing
 

@@ -93,35 +93,6 @@ Result:
 └──────────────┴────────────┴───────────┴─────────┴──────────┘
 ```
 
-### XGBoost Feature Name Compatibility
-
-When working with XGBoost for multi-output regression, feature names must be clean strings without special characters:
-
-```python
-import re
-
-# Clean feature names for XGBoost compatibility
-X_clean.columns = [re.sub(r'[\[\]<>]', '_', col) for col in X_clean.columns]
-```
-
-This is required because XGBoost has strict requirements for feature names. Specifically:
-1. Names must be strings
-2. Names cannot contain brackets ([]), angle brackets (<>), or other special characters
-3. Names must be unique
-
-Example transformation:
-
-```
-Before                      After
-┌────────────────────┐      ┌────────────────────┐
-│Feature[0]          │      │Feature_0_          │
-├────────────────────┤      ├────────────────────┤
-│cell_type[NK cells] │  →   │cell_type_NK cells_ │
-├────────────────────┤      ├────────────────────┤
-│SMILES<aromatic>    │      │SMILES_aromatic_    │
-└────────────────────┘      └────────────────────┘
-```
-
 ## Feature Engineering
 
 ### Feature Selection Methods
@@ -638,4 +609,124 @@ graph TD
     
     C3 --> F1[Pre-trained Drug Embeddings]
     C3 --> F2[Cross-Dataset Knowledge Transfer]
-``` 
+```
+
+## Advanced Neural Network Models
+
+In line with the winning approaches from NeurIPS 2023, we've implemented several advanced neural network models combined with dimensionality reduction:
+
+```mermaid
+graph TD
+    A[Input Data] --> B[Feature Engineering]
+    B --> C[Dimensionality Reduction]
+    C --> D[Neural Network Models]
+    D --> E[Model Ensemble]
+    E --> F[Gene Expression Prediction]
+    
+    subgraph Feature Engineering
+        B1[One-Hot Encoding]
+        B2[Statistical Features]
+    end
+    
+    subgraph Dimensionality Reduction
+        C1[SVD]
+    end
+    
+    subgraph Neural Network Models
+        D1[1D CNN]
+        D2[LSTM]
+        D3[GRU]
+    end
+```
+
+### Singular Value Decomposition (SVD)
+
+Following the second-place winner's approach, we use truncated SVD to reduce the dimensionality of the gene expression space:
+
+```python
+from sklearn.decomposition import TruncatedSVD
+
+# Apply SVD for dimensionality reduction
+svd = TruncatedSVD(n_components=100, random_state=42)
+y_reduced = svd.fit_transform(y_data)
+
+# Later, for prediction, inverse transform back to original space
+y_pred_original = svd.inverse_transform(y_pred_reduced)
+```
+
+This significantly reduces computational requirements while preserving most of the variance in the data.
+
+### 1D Convolutional Neural Network (CNN)
+
+The CNN model treats the input features as a 1D sequence and applies convolution operations:
+
+```python
+class CNNModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim, dropout=0.2):
+        super(CNNModel, self).__init__()
+        
+        self.cnn = nn.Sequential(
+            nn.Conv1d(1, 64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm1d(64),
+            nn.MaxPool1d(2),
+            nn.Dropout(dropout),
+            
+            nn.Conv1d(64, 128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm1d(128),
+            nn.MaxPool1d(2),
+            nn.Dropout(dropout),
+            
+            nn.Conv1d(128, 256, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm1d(256),
+            nn.AdaptiveAvgPool1d(1)
+        )
+        
+        self.fc = nn.Sequential(
+            nn.Linear(256, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden_dim, output_dim)
+        )
+```
+
+### LSTM and GRU Models
+
+For capturing sequential dependencies in the data, we implemented both LSTM and GRU models:
+
+```python
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim, num_layers=2, dropout=0.2):
+        super(LSTMModel, self).__init__()
+        
+        self.lstm = nn.LSTM(
+            input_size=1,
+            hidden_size=hidden_dim,
+            num_layers=num_layers,
+            batch_first=True,
+            dropout=dropout if num_layers > 1 else 0,
+            bidirectional=True
+        )
+        
+        self.fc = nn.Sequential(
+            nn.Linear(hidden_dim * 2, hidden_dim),  # *2 because bidirectional
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(hidden_dim, output_dim)
+        )
+```
+
+### Model Ensemble
+
+Following best practices, we create an ensemble by averaging predictions from multiple models:
+
+```python
+# Create ensemble by averaging predictions
+ensemble_pred_reduced = np.mean(model_predictions, axis=0)
+```
+
+This approach improves robustness and often leads to better performance than any individual model.
+
+## Dimensionality Reduction 

@@ -1,0 +1,17 @@
+HackBio Advanced Models - Performance Summary
+===========================================
+
+SVD Components: 50
+Explained Variance with SVD: 0.9507
+
+Model Performance:
+CNN - R²: 0.3111, MSE: 5.52
+LSTM - R²: -0.0091, MSE: 9.12
+GRU - R²: 0.0701, MSE: 8.37
+Ensemble - R²: 0.2017, MSE: 7.00
+
+Next Steps:
+1. Try different SVD component sizes
+2. Experiment with model architectures
+3. Implement k-fold cross-validation
+4. Explore transfer learning approaches

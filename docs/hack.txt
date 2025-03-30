@@ -1,0 +1,82 @@
+Welcome to HackOS 4!
+
+Learn more about the dataset(s), the hackathon, and find ideas for approaches to the problem we’re solving. You don’t need a background in biology!
+TL;DR of the Challenge
+You’re given an input pair consisting of cell type and small molecule name(s), and the task is to predict a sequence of length 18211 corresponding to gene expressions. 
+
+The full dataset contains 614 samples. We’ve split this dataset into a training set of 501 samples, and a testing set of 113 samples.  We ask that you open source your code and do not train models on the test set! 
+
+You can find the official competition repository linked below, including the training and testing datasets: https://github.com/aniketsrinivasan/hackos-4
+The Open Problem: Single-Cell Perturbations
+For HackOS 4: Hack Bio, we’re aiming to work on the open problem of single-cell perturbations. This challenge was part of the NeurIPS 2023 Competition, and there are plenty of existing documented approaches.
+
+We also want to emphasize that this challenge does not need extensive compute. The winners of the 2023 competition used models that can be trained on regular laptops, and more compute-intensive approaches don’t seem to have significant benefits. 
+Our Benchmark
+We will be benchmarking your models against the same benchmark as used in the official NeurIPS 2023 competition, but with a few modifications. Here are the three criteria you should roughly be following:
+Model accuracy: how well does your model perform at the task?
+Model efficiency: how (time and memory) efficient is your model? 
+Model creativity: how creative is your solution? 
+Ensure to open-source your solutions by the end of the hackathon, and make sure you do not train them on the test dataset! 
+Existing Approaches
+There are several existing approaches to the challenge, and all of them are quite different. Some use decision trees and/or boosting/bagging methods (such as XGBoost), others use older ML architectures such as regular MLPs, CNNs, LSTM, and GRU, and some approaches used Transformer-based models. A lot of these methods seem to yield good results, so try different things and see how they compare! 
+The 1st Place Winner (NeurIPS 2023) Approach
+In 2023, the winner used a relatively simple approach with some tricks to help improve results. Here are some notes from their approach:
+Used one-hot encoding of cell type and small molecule name(s)
+Added “statistics” to target values (basic statistics such as mean, standard deviation, and quartiles)
+Trained 1D CNNs, LSTM, and GRU with 5-fold cross-validation on dataset. 
+The 2nd Place Winner (NeurIPS 2023) Approach
+Notes from the second place approach from the NeurIPS competition:
+Used a Transformer-based approach for sequence modeling. 
+Used truncated singular-value decomposition (SVD) to reduce sequence dimensionality from 18211 to 25/50/100 (for three different models).
+Trained model with k-fold cross-validation on dataset.
+
+You can find the official NeurIPS 2023 competition page here, and we highly suggest you take a look at winners’ presentations for ideas! 
+
+Wacky Ideas to Get You Started
+We’ve compiled a list of ideas below to get you started. Remember, the goal is for you to learn and explore, so ask questions if there are things you don’t understand but want to try! Feel free to come up with your own ideas whether you think they will work or not—the point is to learn and share, and there’s no better way than trying it out.
+
+Recreate any of the past solutions, and see whether you can achieve similar results. Here are some architectures to try:
+Decision trees
+Boosting/bagging (e.g. XGBoost)
+Treat the problem like time-series modeling, since the sequence can be thought of as a time-series! 
+Multi-layer perceptron (MLP)
+Convolutional neural network (2D CNN)
+Is there a way to turn this 1D sequence modeling problem into a 2D image modeling problem? What if you reformatted the sequence to form an image, and used image modeling methods?
+Use image models (e.g. 2D CNN)
+Transformer(s)
+Gated recurrent unit (GRU)
+Long short-term memory (LSTM)
+Recurrent neural network (RNN)
+Recreate past solutions, but better. See the rest of the ideas for how! 
+Past solutions used older models; are there better alternatives now? 
+Loss function comparison and optimization.
+The 1st place winner in 2023 found that BCELoss (binary cross-entropy loss) performed the best with their models.
+Explore how much data compression we can get away with (e.g. with SVD).
+What if we used autoencoders for dimensionality reduction?
+How well do ensemble models perform?
+What if you combined the results from a statistical model (e.g. XGBoost) and a deep learning model (e.g. CNN)?
+How can we use statistical models to provide more information for deep learning sequence modeling?
+What if we tried merging architectures?
+What’s the hardest cell type to predict? 
+Can we train a model that is particularly good at predicting those cell types?
+Train a mixture-of-experts model (MoE) or use an ensemble of models.
+Pass into a different (small) model for each cell type and/or perturbation, each an expert at sequence modeling for that cell type. 
+Use existing data as external knowledge integration, or for training as an extension of the train dataset.
+What if we passed the task to an LLM, but gave it context on the question and the input pair (e.g. we query Wikipedia for information)? 
+Use existing (related) gene interaction databases as extra information to provide the model.
+Try an LLM. These have come a long way since 2023, back when they were less intelligent.
+Few-shot learning.
+Prompt engineering.
+Fine-tuning.
+External knowledge integration. 
+Include basic statistics to improve your model(s).
+The 1st and 2nd place winners in the NeurIPS 2023 challenge both used basic dataset statistics during training, which improved model performance.
+Use test-time adaptation: https://arxiv.org/abs/2303.15361
+Implement contrastive learning for better embeddings of the single-cell data: https://arxiv.org/abs/2002.05709, https://arxiv.org/abs/1911.05722
+Masked sequence modeling.
+Why train on the entire sequence at once, when we can train to predict subsets of each sequence?
+What if we did masked sequence pre-training, and then full-sequence fine-tuning?
+Transfer learning. Train the model on a different biological modeling dataset, and then train/fine-tune on our dataset.
+Make sure the other dataset does not contain information from the test dataset! 
+Curriculum learning. Train the model on easy-to-predict cell types first, and then move onto harder-to-predict cell types. Could improve performance on harder-to-predict cell types.
+

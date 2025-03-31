@@ -29,7 +29,7 @@ HackBio/
 ## Installation
 
 ```bash
-# Create a virtual environment
+# Create  virtual environment
 python -m venv venv
 
 # Activate the virtual environment
